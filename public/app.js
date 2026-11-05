@@ -108,7 +108,7 @@
       case 'init':
         S = m.state;
         users = m.users;
-        if (!DRAW && m.urls) $('#addr').textContent = '✎ ' + m.urls[0];
+        if (!DRAW && m.urls) $('#addr').textContent = '✎ ' + m.urls.slice(0, 2).map((u) => u.replace('http://', '')).join('  ·  ');
         selId = null;
         requestRender();
         break;

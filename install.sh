@@ -120,6 +120,29 @@ if [ -n "$NEW_HOST" ]; then
     echo "preserve_hostname: true" | sudo tee /etc/cloud/cloud.cfg.d/99-whiteboard-hostname.cfg >/dev/null
   fi
 fi
+echo "==> Making the .local name reliable"
+# Which network interface do we use to reach the LAN? (e.g. wlp2s0 or enp1s0)
+IFACE=$(ip route get 1.1.1.1 2>/dev/null | awk '{for(i=1;i<NF;i++) if($i=="dev"){print $(i+1); exit}}')
+AVAHI=/etc/avahi/avahi-daemon.conf
+if [ -f "$AVAHI" ]; then
+  # IPv6 and extra interfaces (docker, VPNs, a second NIC) make Avahi think the name
+  # is taken; it then silently renames the PC to "whiteboard-2.local".
+  sudo sed -i 's/^#\?\s*use-ipv6\s*=.*/use-ipv6=no/' "$AVAHI"
+  if [ -n "$IFACE" ]; then
+    if grep -qE '^#?\s*allow-interfaces\s*=' "$AVAHI"; then
+      sudo sed -i "s/^#\?\s*allow-interfaces\s*=.*/allow-interfaces=$IFACE/" "$AVAHI"
+    else
+      sudo sed -i "/^\[server\]/a allow-interfaces=$IFACE" "$AVAHI"
+    fi
+  fi
+fi
+# Wi-Fi power saving makes the card drop the multicast packets .local names rely on
+if [ -n "$IFACE" ] && [ -d "/sys/class/net/$IFACE/wireless" ]; then
+  echo "    Wi-Fi detected ($IFACE): turning off Wi-Fi power saving"
+  printf '[connection]\nwifi.powersave = 2\n' | sudo tee /etc/NetworkManager/conf.d/99-wifi-powersave-off.conf >/dev/null
+  sudo systemctl reload NetworkManager 2>/dev/null || true
+  sudo iw dev "$IFACE" set power_save off 2>/dev/null || true
+fi
 sudo systemctl enable avahi-daemon >/dev/null 2>&1 || true
 sudo systemctl restart avahi-daemon || true
 
