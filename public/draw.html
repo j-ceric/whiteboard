@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Whiteboard</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body data-role="draw">
+
+<header id="bar">
+  <div class="group" id="tools">
+    <button data-tool="select" title="Select, move &amp; resize (V)"><svg viewBox="0 0 24 24"><path d="M5 3l14 8.5-6.2 1.6L10 19z"/></svg></button>
+    <button data-tool="pen" title="Pen (P)"><svg viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></svg></button>
+    <button data-tool="hl" title="Highlighter (H)"><svg viewBox="0 0 24 24"><path d="M9 14l-4 4v2h5l2-2"/><path d="M9 14l8-10 4 3-9 11z"/></svg></button>
+    <button data-tool="eraser" title="Eraser (E)"><svg viewBox="0 0 24 24"><path d="M8 20h12"/><path d="M4.5 15.5l10-10 5 5-9.5 9.5H8.5z"/><path d="M9.5 10.5l5 5"/></svg></button>
+    <button data-tool="text" title="Text note — Markdown (T)"><svg viewBox="0 0 24 24"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg></button>
+    <button data-tool="laser" title="Laser pointer (L)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></button>
+    <button id="btnImage" title="Insert image (I) — or just paste / drop one"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M4 16l5-5 4 4 2.5-2.5L20 17"/><circle cx="15.5" cy="9.5" r="1.2"/></svg></button>
+    <input type="file" id="file" accept="image/*" multiple hidden>
+  </div>
+  <div class="sep"></div>
+  <div class="group" id="colors"></div>
+  <div class="sep"></div>
+  <div class="group" id="sizes">
+    <button data-size="0" title="Small ([)"><i style="width:5px;height:5px"></i></button>
+    <button data-size="1" title="Medium"><i style="width:9px;height:9px"></i></button>
+    <button data-size="2" title="Large (])"><i style="width:14px;height:14px"></i></button>
+  </div>
+  <div class="sep"></div>
+  <div class="group">
+    <button id="undo" title="Undo (Ctrl+Z)"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 010 11H11"/></svg></button>
+    <button id="redo" title="Redo (Ctrl+Shift+Z)"><svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 000 11H13"/></svg></button>
+    <button id="clear" title="Clear page"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+  </div>
+  <div class="spacer"></div>
+  <div class="group" id="pages">
+    <button id="pgPrev" title="Previous page (PgUp)"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <span id="pgLabel">1 / 1</span>
+    <button id="pgNext" title="Next page (PgDn)"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button id="pgNew" title="New page"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  </div>
+  <div class="sep"></div>
+  <div id="people"></div>
+  <span id="tv" title="No TV connected">TV</span>
+  <div class="menuWrap">
+    <button id="menuBtn" title="More"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button>
+    <div id="menu" hidden>
+      <button data-act="bg">Switch to light board</button>
+      <button data-act="name">Change my name</button>
+      <button data-act="delpage">Delete this page</button>
+      <hr>
+      <button data-act="tv">Open TV view</button>
+      <button data-act="export">Download backup (.json)</button>
+      <hr>
+      <div class="keys">
+        <b>Shortcuts</b>
+        V select · P pen · H highlight · E erase · T text · L laser<br>
+        1–7 colours · [ ] size · Ctrl+Z / Ctrl+Shift+Z<br>
+        Del removes selection · Enter edits note · PgUp/PgDn pages
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div id="wrap">
+    <div id="stage">
+      <div id="items"></div>
+      <canvas id="ink"></canvas>
+      <canvas id="fx"></canvas>
+    </div>
+    <div id="overlay"></div>
+  </div>
+  <div id="hint">Paste Markdown text or images anywhere · drop image files on the board · double-click a note to edit, tick its checkboxes with the select tool</div>
+</main>
+
+<div id="status">Reconnecting…</div>
+<div id="toast"></div>
+
+<script src="/common.js"></script>
+<script src="/markdown.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

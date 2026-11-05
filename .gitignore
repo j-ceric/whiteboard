@@ -1,0 +1,4 @@
+# Board contents and uploaded images (created when the server runs)
+data/
+node_modules/
+.DS_Store
